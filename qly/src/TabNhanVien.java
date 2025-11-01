@@ -74,7 +74,7 @@ public class TabNhanVien extends JPanel {
         JButton btnThemNV = new JButton("Thêm");
         JButton btnSuaNV = new JButton("Sửa");
         JButton btnXoaNV = new JButton("Xóa");
-JButton btnLamMoiNV = new JButton("Làm mới");
+        JButton btnLamMoiNV = new JButton("Làm mới");
 
         // Gắn sự kiện vào các phương thức logic của tab này
         btnThemNV.addActionListener(e -> themNhanVien());
@@ -219,8 +219,9 @@ JButton btnLamMoiNV = new JButton("Làm mới");
         modelNV.setValueAt(thamNienMoiInt, r, 7);
 
         // Cập nhật data (danh sách)
-        danhSachNV.stream().filter(nv -> nv.getMaNhanVien().equals(maNV)).findFirst()
-            .ifPresent(nv -> {
+        
+        for(NhanVien nv :danhSachNV){
+            if(nv.getMaNhanVien().equals(maNV)){
                 nv.setHoTen(tenMoi);
                 nv.setPhongBan(pbMoi.getTenPhongBan());
                 nv.setSdt(sdtMoi);
@@ -228,7 +229,9 @@ JButton btnLamMoiNV = new JButton("Làm mới");
                 nv.setNgaySinh(ngaySinhMoi);
                 nv.setCccd(cccdMoi);
                 nv.setThamNien(thamNienMoiInt);
-            });
+                break;
+            }
+        }
 
         JOptionPane.showMessageDialog(this, "Cập nhật nhân viên thành công!");
         lamMoiFormNV();
