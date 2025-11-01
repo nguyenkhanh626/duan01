@@ -7,7 +7,7 @@ import java.util.Locale;
 
 public class QuanLyNhanVienGUI extends JFrame {
 
-    // === DANH SÁCH DỮ LIỆU (MODEL) - SỞ HỮU CHÍNH ===
+    
     List<NhanVien> danhSachNV;
     List<PhongBan> danhSachPB;
     List<DuAn> danhSachDuAn;
