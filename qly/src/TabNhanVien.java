@@ -218,9 +218,9 @@ JButton btnLamMoiNV = new JButton("Làm mới");
         modelNV.setValueAt(cccdMoi, r, 6);
         modelNV.setValueAt(thamNienMoiInt, r, 7);
 
-        // Cập nhật data (danh sách)
-        danhSachNV.stream().filter(nv -> nv.getMaNhanVien().equals(maNV)).findFirst()
-            .ifPresent(nv -> {
+        // Cập nhật data (danh sách) newversion
+        for(NhanVien nv : danhSachNV) {
+            if(nv.getMaNhanVien().equals(maNV)) {
                 nv.setHoTen(tenMoi);
                 nv.setPhongBan(pbMoi.getTenPhongBan());
                 nv.setSdt(sdtMoi);
@@ -228,8 +228,11 @@ JButton btnLamMoiNV = new JButton("Làm mới");
                 nv.setNgaySinh(ngaySinhMoi);
                 nv.setCccd(cccdMoi);
                 nv.setThamNien(thamNienMoiInt);
-            });
-
+                break;
+            }
+        }
+        
+        
         JOptionPane.showMessageDialog(this, "Cập nhật nhân viên thành công!");
         lamMoiFormNV();
         
