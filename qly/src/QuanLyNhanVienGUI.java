@@ -1,18 +1,24 @@
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-
+/**
+ * Giao diện chính (Main Frame).
+ * PHIÊN BẢN CẬP NHẬT: Đã tái cấu trúc (Refactored).
+ * Chỉ chứa các danh sách dữ liệu và các phương thức refresh chung.
+ */
 public class QuanLyNhanVienGUI extends JFrame {
 
-    
+    // === DANH SÁCH DỮ LIỆU (MODEL) - SỞ HỮU CHÍNH ===
     List<NhanVien> danhSachNV;
     List<PhongBan> danhSachPB;
     List<DuAn> danhSachDuAn;
 
-    // các tab
+    // === CÁC TAB (VIEW) ===
+    // (Chúng ta cần tham chiếu đến các tab để gọi phương thức refresh)
     private TabNhanVien tabNhanVien;
     private TabPhongBan tabPhongBan;
     private TabDuAn tabDuAn;
@@ -24,7 +30,7 @@ public class QuanLyNhanVienGUI extends JFrame {
 
     public QuanLyNhanVienGUI() {
         setTitle("Phần mềm Quản lý Nhân sự");
-        setSize(1500, 700);
+        setSize(900, 700);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         
@@ -117,8 +123,10 @@ public class QuanLyNhanVienGUI extends JFrame {
         }
     }
     
-    // tải dữ liệu mẫu ví dụ
-    
+    // =========================================================================
+    // TẢI DỮ LIỆU MẪU (Chỉ danh sách)
+    // =========================================================================
+
     private void loadSampleDataPB() {
         danhSachPB.add(new PhongBan("KT", "Kỹ thuật"));
         danhSachPB.add(new PhongBan("KD", "Kinh doanh"));
@@ -137,7 +145,7 @@ public class QuanLyNhanVienGUI extends JFrame {
         danhSachDuAn.add(new DuAn("DA02", "Hệ thống CRM nội bộ", 2));
     }
 
-    // main
+    // Phương thức main để chạy ứng dụng
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> new QuanLyNhanVienGUI().setVisible(true));
     }

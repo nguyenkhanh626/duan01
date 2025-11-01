@@ -10,6 +10,7 @@ import java.util.List;
 public class TabLuong extends JPanel {
 
     // === Tham chiếu đến Controller chính và Dữ liệu ===
+    private QuanLyNhanVienGUI parent;
     private List<NhanVien> danhSachNV;
     private NumberFormat currencyFormatter;
 
@@ -18,6 +19,7 @@ public class TabLuong extends JPanel {
     private JTable tableLuong;
     
     public TabLuong(QuanLyNhanVienGUI parent) {
+        this.parent = parent;
         this.danhSachNV = parent.danhSachNV;
         this.currencyFormatter = parent.currencyFormatter; // Lấy bộ định dạng từ parent
 

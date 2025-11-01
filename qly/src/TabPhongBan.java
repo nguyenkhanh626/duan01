@@ -9,6 +9,7 @@ import java.util.List;
 public class TabPhongBan extends JPanel {
 
     // === Tham chiếu đến Controller chính và Dữ liệu ===
+    private QuanLyNhanVienGUI parent;
     private List<NhanVien> danhSachNV;
     private List<PhongBan> danhSachPB;
 
@@ -18,6 +19,7 @@ public class TabPhongBan extends JPanel {
     private JTable tableNhanVienTheoPB;
 
     public TabPhongBan(QuanLyNhanVienGUI parent) {
+        this.parent = parent;
         this.danhSachNV = parent.danhSachNV;
         this.danhSachPB = parent.danhSachPB;
         
