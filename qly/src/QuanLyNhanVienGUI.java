@@ -5,11 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-/**
- * Giao diện chính (Main Frame).
- * PHIÊN BẢN CẬP NHẬT: Đã tái cấu trúc (Refactored).
- * Chỉ chứa các danh sách dữ liệu và các phương thức refresh chung.
- */
+
 public class QuanLyNhanVienGUI extends JFrame {
 
     // === DANH SÁCH DỮ LIỆU (MODEL) - SỞ HỮU CHÍNH ===
