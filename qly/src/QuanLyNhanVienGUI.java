@@ -1,5 +1,5 @@
 import javax.swing.*;
-//import javax.swing.table.DefaultTableModel;
+// import javax.swing.table.DefaultTableModel; // Dòng này đã xóa ở lần trước
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -7,8 +7,7 @@ import java.util.Locale;
 
 /**
  * Giao diện chính (Main Frame).
- * PHIÊN BẢN CẬP NHẬT: Đã tái cấu trúc (Refactored).
- * Chỉ chứa các danh sách dữ liệu và các phương thức refresh chung.
+ * PHIÊN BẢN CẬP NHẬT: Thêm TabBaoCao.
  */
 public class QuanLyNhanVienGUI extends JFrame {
 
@@ -18,14 +17,13 @@ public class QuanLyNhanVienGUI extends JFrame {
     List<DuAn> danhSachDuAn;
 
     // === CÁC TAB (VIEW) ===
-    // (Chúng ta cần tham chiếu đến các tab để gọi phương thức refresh)
     private TabNhanVien tabNhanVien;
     private TabPhongBan tabPhongBan;
     private TabDuAn tabDuAn;
     private TabHieuSuat tabHieuSuat;
     private TabLuong tabLuong;
+    private TabBaoCao tabBaoCao; // MỚI
     
-    // Bộ định dạng tiền tệ
     NumberFormat currencyFormatter;
 
     public QuanLyNhanVienGUI() {
@@ -36,38 +34,33 @@ public class QuanLyNhanVienGUI extends JFrame {
         
         currencyFormatter = NumberFormat.getCurrencyInstance(Locale.of("vi", "VN"));
 
-        // Khởi tạo các danh sách
         danhSachNV = new ArrayList<>();
         danhSachPB = new ArrayList<>();
         danhSachDuAn = new ArrayList<>();
 
-        // Tải dữ liệu mẫu (chỉ tải data, không đụng đến model)
         loadSampleDataPB();
         loadSampleDataNV();
         loadSampleDataDuAn();
         
-        // Khởi tạo JTabbedPane
         JTabbedPane tabbedPane = new JTabbedPane();
         
-        // === KHỞI TẠO CÁC TAB ===
-        // "this" = truyền chính JFrame này vào các tab
         tabNhanVien = new TabNhanVien(this);
         tabPhongBan = new TabPhongBan(this);
         tabDuAn = new TabDuAn(this);
         tabLuong = new TabLuong(this);
         tabHieuSuat = new TabHieuSuat(this);
+        tabBaoCao = new TabBaoCao(this); // MỚI
 
-        // Thêm các tab vào
         tabbedPane.addTab("Quản lý Nhân viên", null, tabNhanVien, "Quản lý thông tin nhân viên");
         tabbedPane.addTab("Xem theo Phòng ban", null, tabPhongBan, "Xem nhân viên theo phòng ban");
         tabbedPane.addTab("Quản lý Dự án", null, tabDuAn, "Quản lý các dự án");
         tabbedPane.addTab("Quản lý Lương", null, tabLuong, "Xem bảng lương nhân viên");
         tabbedPane.addTab("Quản lý Hiệu suất", null, tabHieuSuat, "Quản lý và đánh giá hiệu suất");
+        tabbedPane.addTab("Báo cáo", null, tabBaoCao, "Báo cáo và Thống kê"); // MỚI
 
         add(tabbedPane);
 
-        // === TẢI DỮ LIỆU LẦN ĐẦU CHO CÁC BẢNG ===
-        // (Sau khi tất cả đã được khởi tạo)
+        // Tải dữ liệu lần đầu
         tabNhanVien.refreshTableNV();
         tabNhanVien.updatePhongBanComboBox();
         
@@ -78,42 +71,44 @@ public class QuanLyNhanVienGUI extends JFrame {
         tabDuAn.updateDuAnComboBox();
         
         tabLuong.refreshLuongTable();
+        tabBaoCao.refreshBaoCao(); // MỚI
     }
     
     // =========================================================================
     // CÁC PHƯƠNG THỨC REFRESH CHUNG (PUBLIC)
-    // (Để các tab gọi khi cần cập nhật lẫn nhau)
     // =========================================================================
     
-    /** Làm mới bảng lương (TabLuong) */
+    /** Làm mới bảng báo cáo (TabBaoCao) */
+    public void refreshBaoCaoTab() { // MỚI
+        if (tabBaoCao != null) {
+            tabBaoCao.refreshBaoCao();
+        }
+    }
+    
     public void refreshLuongTable() {
         if (tabLuong != null) {
             tabLuong.refreshLuongTable();
         }
     }
 
-    /** Làm mới bảng lọc NV của TabPhongBan */
     public void locNhanVienTheoPhongBan() {
         if (tabPhongBan != null) {
             tabPhongBan.locNhanVienTheoPhongBan();
         }
     }
     
-    /** Làm mới bảng NV chính (TabNhanVien) */
     public void refreshTableNV() {
         if (tabNhanVien != null) {
             tabNhanVien.refreshTableNV();
         }
     }
     
-    /** Cập nhật ComboBox chọn dự án (TabDuAn) */
     public void updateDuAnComboBox() {
          if (tabDuAn != null) {
             tabDuAn.updateDuAnComboBox();
         }
     }
     
-    /** Cập nhật ComboBox chọn phòng ban (TabNhanVien và TabPhongBan) */
     public void updatePhongBanComboBox() {
         if (tabNhanVien != null) {
             tabNhanVien.updatePhongBanComboBox();
@@ -124,7 +119,7 @@ public class QuanLyNhanVienGUI extends JFrame {
     }
     
     // =========================================================================
-    // TẢI DỮ LIỆU MẪU (Chỉ danh sách)
+    // TẢI DỮ LIỆU MẪU (Không thay đổi)
     // =========================================================================
 
     private void loadSampleDataPB() {
@@ -145,7 +140,6 @@ public class QuanLyNhanVienGUI extends JFrame {
         danhSachDuAn.add(new DuAn("DA02", "Hệ thống CRM nội bộ", 2));
     }
 
-    // Phương thức main để chạy ứng dụng
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> new QuanLyNhanVienGUI().setVisible(true));
     }

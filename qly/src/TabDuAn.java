@@ -5,6 +5,7 @@ import java.util.List;
 
 /**
  * Lớp này là JPanel cho tab "Quản lý Dự án"
+ * PHIÊN BẢN CẬP NHẬT: Gọi refreshBaoCaoTab()
  */
 public class TabDuAn extends JPanel {
     
@@ -111,10 +112,10 @@ public class TabDuAn extends JPanel {
         if (danhSachDuAn.stream().anyMatch(da -> da.getMaDuAn().equals(maDA))) { /* ... báo lỗi ... */ return; }
 
         DuAn da = new DuAn(maDA, tenDA, doPhucTap);
-        danhSachDuAn.add(da); // Thêm vào data
-        modelDuAn.addRow(new Object[]{da.getMaDuAn(), da.getTenDuAn(), da.getDoPhucTap()}); // Thêm vào view
+        danhSachDuAn.add(da);
+        modelDuAn.addRow(new Object[]{da.getMaDuAn(), da.getTenDuAn(), da.getDoPhucTap()});
         
-        parent.updateDuAnComboBox(); // Cập nhật (chính nó)
+        parent.updateDuAnComboBox();
         
         JOptionPane.showMessageDialog(this, "Thêm dự án thành công!");
         txtMaDuAn.setText("");
@@ -138,12 +139,11 @@ public class TabDuAn extends JPanel {
         if (nvFound == null) { /* ... báo lỗi ... */ return; }
         if (selectedDA.hasThanhVien(nvFound)) { /* ... báo lỗi ... */ return; }
 
-        // Logic chính
         int diemThuong = selectedDA.getDoPhucTap();
         nvFound.addDiemThuongDuAn(diemThuong);
         selectedDA.addThanhVien(nvFound);
 
-        locThanhVienTheoDuAn(); // Cập nhật bảng
+        locThanhVienTheoDuAn();
 
         JOptionPane.showMessageDialog(this, "Đã thêm " + nvFound.getHoTen() + " vào dự án.\n"
                 + "Nhân viên được cộng " + diemThuong + " điểm thưởng (Tổng điểm thưởng: " + nvFound.getDiemThuongDuAn() + ").",
@@ -152,7 +152,8 @@ public class TabDuAn extends JPanel {
         txtMaNVThemVaoDuAn.setText("");
         
         // === GỌI HÀM REFRESH CỦA PARENT ===
-        parent.refreshLuongTable(); // Cập nhật tab Lương
+        parent.refreshLuongTable();
+        parent.refreshBaoCaoTab(); // MỚI
     }
 
     private void locThanhVienTheoDuAn() {

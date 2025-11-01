@@ -7,6 +7,7 @@ import java.util.List;
 
 /**
  * Lớp này là JPanel cho tab "Quản lý Nhân viên"
+ * PHIÊN BẢN CẬP NHẬT: Gọi refreshBaoCaoTab()
  */
 public class TabNhanVien extends JPanel {
 
@@ -32,7 +33,7 @@ public class TabNhanVien extends JPanel {
         // Sử dụng BorderLayout cho panel chính của tab
         setLayout(new BorderLayout(10, 10));
         
-        // === Xây dựng giao diện (Giống hệt code createNhanVienPanel() cũ) ===
+        // === Xây dựng giao diện ===
         JPanel topPanel = new JPanel(new BorderLayout(0, 10));
         JPanel formPanel = new JPanel(new GridLayout(0, 4, 10, 5));
         
@@ -74,7 +75,7 @@ public class TabNhanVien extends JPanel {
         JButton btnThemNV = new JButton("Thêm");
         JButton btnSuaNV = new JButton("Sửa");
         JButton btnXoaNV = new JButton("Xóa");
-JButton btnLamMoiNV = new JButton("Làm mới");
+        JButton btnLamMoiNV = new JButton("Làm mới");
 
         // Gắn sự kiện vào các phương thức logic của tab này
         btnThemNV.addActionListener(e -> themNhanVien());
@@ -136,6 +137,7 @@ JButton btnLamMoiNV = new JButton("Làm mới");
     }
 
     private void themNhanVien() {
+        // ... (code kiểm tra dữ liệu) ...
         String maNV = txtMaNV.getText();
         String tenNV = txtTenNV.getText();
         PhongBan pb = (PhongBan) cmbPhongBanNV.getSelectedItem();
@@ -144,7 +146,6 @@ JButton btnLamMoiNV = new JButton("Làm mới");
         String ngaySinh = txtNgaySinh.getText();
         String cccd = txtCccd.getText();
         String thamNienStr = txtThamNien.getText();
-        
         if (maNV.isEmpty() || tenNV.isEmpty() || pb == null) {
             JOptionPane.showMessageDialog(this, "Mã NV, Tên NV và Phòng ban là bắt buộc.", "Lỗi", JOptionPane.ERROR_MESSAGE);
             return;
@@ -167,11 +168,9 @@ JButton btnLamMoiNV = new JButton("Làm mới");
             }
         }
         
-        // Tạo và thêm vào danh sách data
         NhanVien nv = new NhanVien(maNV, tenNV, pb.getTenPhongBan(), sdt, email, ngaySinh, cccd, thamNienInt);
         danhSachNV.add(nv);
         
-        // Thêm vào bảng (view)
         modelNV.addRow(new Object[]{
                 nv.getMaNhanVien(), nv.getHoTen(), nv.getPhongBan(),
                 nv.getSdt(), nv.getEmail(), nv.getNgaySinh(),
@@ -182,14 +181,16 @@ JButton btnLamMoiNV = new JButton("Làm mới");
         lamMoiFormNV();
         
         // === GỌI CÁC HÀM REFRESH CỦA PARENT ===
-        parent.locNhanVienTheoPhongBan(); // Cập nhật tab Phòng ban
-        parent.refreshLuongTable();       // Cập nhật tab Lương
+        parent.locNhanVienTheoPhongBan();
+        parent.refreshLuongTable();
+        parent.refreshBaoCaoTab(); // MỚI
     }
 
     private void suaNhanVien() {
         int r = tableNV.getSelectedRow();
         if (r == -1) { /* ... báo lỗi ... */ return; }
         
+        // ... (code lấy dữ liệu từ form) ...
         String maNV = txtMaNV.getText();
         String tenMoi = txtTenNV.getText();
         PhongBan pbMoi = (PhongBan) cmbPhongBanNV.getSelectedItem();
@@ -199,7 +200,6 @@ JButton btnLamMoiNV = new JButton("Làm mới");
         String cccdMoi = txtCccd.getText();
         String thamNienMoiStr = txtThamNien.getText();
         if (tenMoi.isEmpty() || pbMoi == null) { /* ... báo lỗi ... */ return; }
-        
         int validatedThamNien = 0;
         if (!thamNienMoiStr.isEmpty()) {
             try {
@@ -208,8 +208,8 @@ JButton btnLamMoiNV = new JButton("Làm mới");
             } catch (NumberFormatException e) { /* ... báo lỗi ... */ return; }
         }
         final int thamNienMoiInt = validatedThamNien;
-
-        // Cập nhật view (bảng)
+        
+        // ... (code cập nhật modelNV và danhSachNV) ...
         modelNV.setValueAt(tenMoi, r, 1);
         modelNV.setValueAt(pbMoi.getTenPhongBan(), r, 2);
         modelNV.setValueAt(sdtMoi, r, 3);
@@ -218,7 +218,6 @@ JButton btnLamMoiNV = new JButton("Làm mới");
         modelNV.setValueAt(cccdMoi, r, 6);
         modelNV.setValueAt(thamNienMoiInt, r, 7);
 
-        // Cập nhật data (danh sách) newversion
         for(NhanVien nv : danhSachNV) {
             if(nv.getMaNhanVien().equals(maNV)) {
                 nv.setHoTen(tenMoi);
@@ -231,14 +230,14 @@ JButton btnLamMoiNV = new JButton("Làm mới");
                 break;
             }
         }
-        
-        
+
         JOptionPane.showMessageDialog(this, "Cập nhật nhân viên thành công!");
         lamMoiFormNV();
         
         // === GỌI CÁC HÀM REFRESH CỦA PARENT ===
-        parent.locNhanVienTheoPhongBan(); // Cập nhật tab Phòng ban
-        parent.refreshLuongTable();       // Cập nhật tab Lương
+        parent.locNhanVienTheoPhongBan();
+        parent.refreshLuongTable();
+        parent.refreshBaoCaoTab(); // MỚI
     }
 
     private void xoaNhanVien() {
@@ -248,17 +247,16 @@ JButton btnLamMoiNV = new JButton("Làm mới");
         int confirm = JOptionPane.showConfirmDialog(this, "Bạn chắc chắn muốn xóa?", "Xác nhận", JOptionPane.YES_NO_OPTION);
         if (confirm == JOptionPane.YES_OPTION) {
             String maNV = modelNV.getValueAt(r, 0).toString();
-            // Xóa khỏi data
             danhSachNV.removeIf(nv -> nv.getMaNhanVien().equals(maNV));
-            // Xóa khỏi view
             modelNV.removeRow(r);
             
             JOptionPane.showMessageDialog(this, "Xóa nhân viên thành công!");
             lamMoiFormNV();
             
             // === GỌI CÁC HÀM REFRESH CỦA PARENT ===
-            parent.locNhanVienTheoPhongBan(); // Cập nhật tab Phòng ban
-            parent.refreshLuongTable();       // Cập nhật tab Lương
+            parent.locNhanVienTheoPhongBan();
+            parent.refreshLuongTable();
+            parent.refreshBaoCaoTab(); // MỚI
         }
     }
 
@@ -279,7 +277,6 @@ JButton btnLamMoiNV = new JButton("Làm mới");
     // CÁC PHƯƠNG THỨC REFRESH CỤC BỘ (GỌI BỞI PARENT)
     // =========================================================================
     
-    /** Cập nhật lại toàn bộ bảng NV từ danhSachNV */
     public void refreshTableNV() {
         modelNV.setRowCount(0); // Xóa bảng
         for (NhanVien nv : danhSachNV) {
@@ -291,7 +288,6 @@ JButton btnLamMoiNV = new JButton("Làm mới");
         }
     }
     
-    /** Cập nhật ComboBox phòng ban từ danhSachPB */
     public void updatePhongBanComboBox() {
         cmbPhongBanNV.removeAllItems();
         for (PhongBan pb : danhSachPB) {

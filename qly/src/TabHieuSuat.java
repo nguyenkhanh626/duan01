@@ -5,6 +5,7 @@ import java.util.List;
 
 /**
  * Lớp này là JPanel cho tab "Quản lý Hiệu suất"
+ * PHIÊN BẢN CẬP NHẬT: Gọi refreshBaoCaoTab()
  */
 public class TabHieuSuat extends JPanel {
 
@@ -155,7 +156,8 @@ public class TabHieuSuat extends JPanel {
         radioDiMuon.setSelected(true);
         
         // === GỌI HÀM REFRESH CỦA PARENT ===
-        parent.refreshLuongTable(); // Cập nhật tab Lương
+        parent.refreshLuongTable();
+        parent.refreshBaoCaoTab(); // MỚI
     }
 
     // Hàm tiện ích tạo placeholder
