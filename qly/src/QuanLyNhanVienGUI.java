@@ -12,8 +12,7 @@ public class QuanLyNhanVienGUI extends JFrame {
     List<PhongBan> danhSachPB;
     List<DuAn> danhSachDuAn;
 
-    // === CÁC TAB (VIEW) ===
-    // (Chúng ta cần tham chiếu đến các tab để gọi phương thức refresh)
+    // các tab
     private TabNhanVien tabNhanVien;
     private TabPhongBan tabPhongBan;
     private TabDuAn tabDuAn;
@@ -25,7 +24,7 @@ public class QuanLyNhanVienGUI extends JFrame {
 
     public QuanLyNhanVienGUI() {
         setTitle("Phần mềm Quản lý Nhân sự");
-        setSize(900, 700);
+        setSize(1500, 700);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         
@@ -118,10 +117,8 @@ public class QuanLyNhanVienGUI extends JFrame {
         }
     }
     
-    // =========================================================================
-    // TẢI DỮ LIỆU MẪU (Chỉ danh sách)
-    // =========================================================================
-
+    // tải dữ liệu mẫu ví dụ
+    
     private void loadSampleDataPB() {
         danhSachPB.add(new PhongBan("KT", "Kỹ thuật"));
         danhSachPB.add(new PhongBan("KD", "Kinh doanh"));
@@ -140,7 +137,7 @@ public class QuanLyNhanVienGUI extends JFrame {
         danhSachDuAn.add(new DuAn("DA02", "Hệ thống CRM nội bộ", 2));
     }
 
-    // Phương thức main để chạy ứng dụng
+    // main
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> new QuanLyNhanVienGUI().setVisible(true));
     }
