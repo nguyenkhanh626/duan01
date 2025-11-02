@@ -5,35 +5,30 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.List;
 
-/**
- * Lớp này là JPanel cho tab "Quản lý Nhân viên"
- * PHIÊN BẢN CẬP NHẬT: Gọi refreshBaoCaoTab()
- */
+
 public class TabNhanVien extends JPanel {
 
-    // === Tham chiếu đến Controller chính và Dữ liệu ===
+
     private QuanLyNhanVienGUI parent;
     private List<NhanVien> danhSachNV;
     private List<PhongBan> danhSachPB;
 
-    // === Các thành phần UI của tab này ===
+
     private JComboBox<PhongBan> cmbPhongBanNV;
     private DefaultTableModel modelNV;
     private JTable tableNV;
     private JTextField txtMaNV, txtTenNV, txtSdt, txtEmail, txtNgaySinh, txtCccd, txtThamNien;
 
-    /**
-     * Hàm khởi tạo (Constructor) của tab
-     */
+
     public TabNhanVien(QuanLyNhanVienGUI parent) {
         this.parent = parent;
-        this.danhSachNV = parent.danhSachNV; // Lấy danh sách từ parent
-        this.danhSachPB = parent.danhSachPB; // Lấy danh sách từ parent
+        this.danhSachNV = parent.danhSachNV; 
+        this.danhSachPB = parent.danhSachPB; 
 
-        // Sử dụng BorderLayout cho panel chính của tab
+
         setLayout(new BorderLayout(10, 10));
         
-        // === Xây dựng giao diện ===
+
         JPanel topPanel = new JPanel(new BorderLayout(0, 10));
         JPanel formPanel = new JPanel(new GridLayout(0, 4, 10, 5));
         
@@ -77,7 +72,7 @@ public class TabNhanVien extends JPanel {
         JButton btnXoaNV = new JButton("Xóa");
         JButton btnLamMoiNV = new JButton("Làm mới");
 
-        // Gắn sự kiện vào các phương thức logic của tab này
+
         btnThemNV.addActionListener(e -> themNhanVien());
         btnSuaNV.addActionListener(e -> suaNhanVien());
         btnXoaNV.addActionListener(e -> xoaNhanVien());
@@ -89,7 +84,7 @@ public class TabNhanVien extends JPanel {
         buttonPanel.add(btnLamMoiNV);
         
         topPanel.add(buttonPanel, BorderLayout.SOUTH);
-        add(topPanel, BorderLayout.NORTH); // Thêm form và nút vào panel chính
+        add(topPanel, BorderLayout.NORTH);
 
         String[] columnNames = {"Mã NV", "Họ Tên", "Phòng ban", "SĐT", "Email", "Ngày sinh", "CCCD", "Thâm niên (năm)"};
         modelNV = new DefaultTableModel(columnNames, 0) {
@@ -100,7 +95,7 @@ public class TabNhanVien extends JPanel {
         };
         tableNV = new JTable(modelNV);
         
-        // Sự kiện click chuột
+
         tableNV.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -112,9 +107,7 @@ public class TabNhanVien extends JPanel {
         setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
     }
     
-    // =========================================================================
-    // CÁC PHƯƠNG THỨC LOGIC CỦA TAB NÀY
-    // =========================================================================
+
     
     private void hienThiThongTinLenFormNV() {
         int r = tableNV.getSelectedRow();
@@ -180,7 +173,7 @@ public class TabNhanVien extends JPanel {
         JOptionPane.showMessageDialog(this, "Thêm nhân viên thành công!");
         lamMoiFormNV();
         
-        // === GỌI CÁC HÀM REFRESH CỦA PARENT ===
+
         parent.locNhanVienTheoPhongBan();
         parent.refreshLuongTable();
         parent.refreshBaoCaoTab(); // MỚI
@@ -209,7 +202,7 @@ public class TabNhanVien extends JPanel {
         }
         final int thamNienMoiInt = validatedThamNien;
         
-        // ... (code cập nhật modelNV và danhSachNV) ...
+
         modelNV.setValueAt(tenMoi, r, 1);
         modelNV.setValueAt(pbMoi.getTenPhongBan(), r, 2);
         modelNV.setValueAt(sdtMoi, r, 3);
@@ -234,10 +227,10 @@ public class TabNhanVien extends JPanel {
         JOptionPane.showMessageDialog(this, "Cập nhật nhân viên thành công!");
         lamMoiFormNV();
         
-        // === GỌI CÁC HÀM REFRESH CỦA PARENT ===
+
         parent.locNhanVienTheoPhongBan();
         parent.refreshLuongTable();
-        parent.refreshBaoCaoTab(); // MỚI
+        parent.refreshBaoCaoTab();
     }
 
     private void xoaNhanVien() {
@@ -253,10 +246,10 @@ public class TabNhanVien extends JPanel {
             JOptionPane.showMessageDialog(this, "Xóa nhân viên thành công!");
             lamMoiFormNV();
             
-            // === GỌI CÁC HÀM REFRESH CỦA PARENT ===
+
             parent.locNhanVienTheoPhongBan();
             parent.refreshLuongTable();
-            parent.refreshBaoCaoTab(); // MỚI
+            parent.refreshBaoCaoTab();
         }
     }
 
@@ -273,12 +266,10 @@ public class TabNhanVien extends JPanel {
         tableNV.clearSelection();
     }
     
-    // =========================================================================
-    // CÁC PHƯƠNG THỨC REFRESH CỤC BỘ (GỌI BỞI PARENT)
-    // =========================================================================
+
     
     public void refreshTableNV() {
-        modelNV.setRowCount(0); // Xóa bảng
+        modelNV.setRowCount(0);
         for (NhanVien nv : danhSachNV) {
             modelNV.addRow(new Object[]{
                 nv.getMaNhanVien(), nv.getHoTen(), nv.getPhongBan(),
