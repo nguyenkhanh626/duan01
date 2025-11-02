@@ -15,7 +15,7 @@ public class QuanLyNhanVienGUI extends JFrame {
     private TabDuAn tabDuAn;
     private TabHieuSuat tabHieuSuat;
     private TabLuong tabLuong;
-    private TabBaoCao tabBaoCao; // MỚI
+    private TabBaoCao tabBaoCao;
     
     NumberFormat currencyFormatter;
 
@@ -42,7 +42,7 @@ public class QuanLyNhanVienGUI extends JFrame {
         tabDuAn = new TabDuAn(this);
         tabLuong = new TabLuong(this);
         tabHieuSuat = new TabHieuSuat(this);
-        tabBaoCao = new TabBaoCao(this); // MỚI
+        tabBaoCao = new TabBaoCao(this);
 
         tabbedPane.addTab("Quản lý Nhân viên", null, tabNhanVien, "Quản lý thông tin nhân viên");
         tabbedPane.addTab("Xem theo Phòng ban", null, tabPhongBan, "Xem nhân viên theo phòng ban");
@@ -53,7 +53,7 @@ public class QuanLyNhanVienGUI extends JFrame {
 
         add(tabbedPane);
 
-        // Tải dữ liệu lần đầu
+        // first load data
         tabNhanVien.refreshTableNV();
         tabNhanVien.updatePhongBanComboBox();
         
