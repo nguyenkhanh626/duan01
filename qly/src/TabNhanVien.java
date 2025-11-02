@@ -103,7 +103,7 @@ public class TabNhanVien extends JPanel {
             }
         });
         
-        add(new JScrollPane(tableNV), BorderLayout.CENTER); // Thêm bảng vào panel chính
+        add(new JScrollPane(tableNV), BorderLayout.CENTER);
         setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
     }
     
@@ -176,7 +176,7 @@ public class TabNhanVien extends JPanel {
 
         parent.locNhanVienTheoPhongBan();
         parent.refreshLuongTable();
-        parent.refreshBaoCaoTab(); // MỚI
+        parent.refreshBaoCaoTab();
     }
 
     private void suaNhanVien() {
