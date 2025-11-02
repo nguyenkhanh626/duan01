@@ -17,14 +17,14 @@ public class TabLuong extends JPanel {
     public TabLuong(QuanLyNhanVienGUI parent) {
         this.parent = parent;
         this.danhSachNV = parent.danhSachNV;
-        this.currencyFormatter = parent.currencyFormatter; // Lấy bộ định dạng từ parent
+        this.currencyFormatter = parent.currencyFormatter;
 
         setLayout(new BorderLayout(10, 10));
         setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
         JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         JButton btnRefreshLuong = new JButton("Làm mới Bảng lương");
-        btnRefreshLuong.addActionListener(e -> refreshLuongTable()); // Gọi hàm cục bộ
+        btnRefreshLuong.addActionListener(e -> refreshLuongTable());
         topPanel.add(btnRefreshLuong);
         add(topPanel, BorderLayout.NORTH);
 
