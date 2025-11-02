@@ -25,7 +25,7 @@ public class PhongBan {
 
     @Override
     public String toString() {
-        // Dùng để hiển thị tên trong JComboBox
+        
         return tenPhongBan; 
     }
 }
