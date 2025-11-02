@@ -4,22 +4,18 @@ import java.awt.*;
 import java.text.NumberFormat;
 import java.util.List;
 
-/**
- * Lớp này là JPanel cho tab "Quản lý Lương" (Chỉ xem)
- */
+
 public class TabLuong extends JPanel {
 
-    // === Tham chiếu đến Controller chính và Dữ liệu ===
-    //private QuanLyNhanVienGUI parent;
+    private QuanLyNhanVienGUI parent;
     private List<NhanVien> danhSachNV;
     private NumberFormat currencyFormatter;
 
-    // === Các thành phần UI của tab này ===
     private DefaultTableModel modelLuong;
     private JTable tableLuong;
     
     public TabLuong(QuanLyNhanVienGUI parent) {
-        //this.parent = parent;
+        this.parent = parent;
         this.danhSachNV = parent.danhSachNV;
         this.currencyFormatter = parent.currencyFormatter; // Lấy bộ định dạng từ parent
 
@@ -45,9 +41,7 @@ public class TabLuong extends JPanel {
         add(new JScrollPane(tableLuong), BorderLayout.CENTER);
     }
 
-    /**
-     * Tính toán và làm mới toàn bộ bảng lương (GỌI BỞI PARENT)
-     */
+
     public void refreshLuongTable() {
         if (modelLuong == null) return;
 
