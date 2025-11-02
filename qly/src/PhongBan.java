@@ -1,17 +1,12 @@
-/**
- * Lớp (model) đại diện cho đối tượng Phòng Ban.
- */
 public class PhongBan {
     private String maPhongBan;
     private String tenPhongBan;
 
-    // Constructor
     public PhongBan(String maPhongBan, String tenPhongBan) {
         this.maPhongBan = maPhongBan;
         this.tenPhongBan = tenPhongBan;
     }
 
-    // Getters
     public String getMaPhongBan() {
         return maPhongBan;
     }
@@ -20,7 +15,6 @@ public class PhongBan {
         return tenPhongBan;
     }
 
-    // Setters
     public void setMaPhongBan(String maPhongBan) {
         this.maPhongBan = maPhongBan;
     }
