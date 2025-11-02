@@ -22,7 +22,7 @@ public class TabBaoCao extends JPanel {
 
         setLayout(new BorderLayout());
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
-        splitPane.setResizeWeight(0.5); // Chia 50/50
+        splitPane.setResizeWeight(0.5);
 
         JPanel panelThuong = new JPanel(new BorderLayout(5, 5));
         panelThuong.setBorder(BorderFactory.createTitledBorder("Top 5 Nhân viên - Điểm thưởng Dự án cao nhất"));
@@ -61,9 +61,9 @@ public class TabBaoCao extends JPanel {
 
         modelTopThuong.setRowCount(0);
         List<NhanVien> topThuong = danhSachNV.stream()
-                .filter(nv -> nv.getDiemThuongDuAn() > 0) // Chỉ lấy người có điểm
-                .sorted(Comparator.comparingInt(NhanVien::getDiemThuongDuAn).reversed()) // Sắp xếp giảm dần
-                .limit(5) // Chỉ lấy 5 người
+                .filter(nv -> nv.getDiemThuongDuAn() > 0)
+                .sorted(Comparator.comparingInt(NhanVien::getDiemThuongDuAn).reversed())
+                .limit(5)
                 .collect(Collectors.toList());
 
         int hangThuong = 1;
@@ -78,9 +78,9 @@ public class TabBaoCao extends JPanel {
 
         modelTopPhat.setRowCount(0);
         List<NhanVien> topPhat = danhSachNV.stream()
-                .filter(nv -> nv.getDiemViPham() > 0) // Chỉ lấy người có điểm
-                .sorted(Comparator.comparingInt(NhanVien::getDiemViPham).reversed()) // Sắp xếp giảm dần
-                .limit(5) // Chỉ lấy 5 người
+                .filter(nv -> nv.getDiemViPham() > 0)
+                .sorted(Comparator.comparingInt(NhanVien::getDiemViPham).reversed())
+                .limit(5)
                 .collect(Collectors.toList());
 
         int hangPhat = 1;
