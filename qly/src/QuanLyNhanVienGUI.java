@@ -21,7 +21,7 @@ public class QuanLyNhanVienGUI extends JFrame {
 
     public QuanLyNhanVienGUI() {
         setTitle("Phần mềm Quản lý Nhân sự");
-        setSize(900, 700);
+        setSize(1200, 700);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         
