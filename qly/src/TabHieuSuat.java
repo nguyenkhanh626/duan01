@@ -38,7 +38,7 @@ public class TabHieuSuat extends JPanel {
         cardLayoutHieuSuat = new CardLayout();
         cardPanelHieuSuat = new JPanel(cardLayoutHieuSuat);
 
-        JPanel diemDanhPanel = createDiemDanhPanel(); // Tạo thẻ Điểm danh
+        JPanel diemDanhPanel = createDiemDanhPanel();
         JPanel kpiPanel = createPlaceholderPanel("Chức năng Đánh giá KPI sẽ được xây dựng ở đây");
         
 
@@ -148,7 +148,7 @@ public class TabHieuSuat extends JPanel {
         
 
         parent.refreshLuongTable();
-        parent.refreshBaoCaoTab(); // MỚI
+        parent.refreshBaoCaoTab();
     }
 
 
