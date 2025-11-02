@@ -3,17 +3,14 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.util.List;
 
-/**
- * Lớp này là JPanel cho tab "Quản lý Hiệu suất"
- * PHIÊN BẢN CẬP NHẬT: Gọi refreshBaoCaoTab()
- */
+
 public class TabHieuSuat extends JPanel {
 
-    // === Tham chiếu đến Controller chính và Dữ liệu ===
+
     private QuanLyNhanVienGUI parent;
     private List<NhanVien> danhSachNV;
 
-    // === Các thành phần UI của tab này ===
+
     private JPanel cardPanelHieuSuat;
     private CardLayout cardLayoutHieuSuat;
     private JTextField txtMaNVDiemDanh;
@@ -30,7 +27,7 @@ public class TabHieuSuat extends JPanel {
         setLayout(new BorderLayout(10, 10));
         setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        // 1. Panel trên cùng chứa ComboBox
+
         JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         topPanel.add(new JLabel("Chọn chức năng:"));
         String[] modes = {"Điểm danh", "Đánh giá KPI"};
@@ -38,37 +35,33 @@ public class TabHieuSuat extends JPanel {
         
         add(topPanel, BorderLayout.NORTH);
 
-        // 2. Panel trung tâm chứa các "thẻ"
         cardLayoutHieuSuat = new CardLayout();
         cardPanelHieuSuat = new JPanel(cardLayoutHieuSuat);
 
-        // 3. Tạo các thẻ (panel) con
         JPanel diemDanhPanel = createDiemDanhPanel(); // Tạo thẻ Điểm danh
         JPanel kpiPanel = createPlaceholderPanel("Chức năng Đánh giá KPI sẽ được xây dựng ở đây");
         
-        // 4. Thêm các thẻ vào CardLayout
+
         cardPanelHieuSuat.add(diemDanhPanel, "Điểm danh");
         cardPanelHieuSuat.add(kpiPanel, "Đánh giá KPI");
 
         add(cardPanelHieuSuat, BorderLayout.CENTER);
 
-        // 5. Thêm sự kiện cho ComboBox để chuyển thẻ
+
         modeSelector.addActionListener(e -> {
             String selectedMode = (String) modeSelector.getSelectedItem();
             cardLayoutHieuSuat.show(cardPanelHieuSuat, selectedMode);
         });
     }
     
-    /**
-     * Tạo panel con cho chức năng Điểm danh
-     */
+
     private JPanel createDiemDanhPanel() {
         JPanel panel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(5, 5, 5, 5);
         gbc.anchor = GridBagConstraints.WEST;
 
-        // Form
+
         gbc.gridx = 0; gbc.gridy = 0;
         panel.add(new JLabel("Nhập Mã nhân viên:"), gbc);
         
@@ -96,7 +89,7 @@ public class TabHieuSuat extends JPanel {
         btnGhiNhanDiemDanh.addActionListener(e -> xuLyGhiNhanDiemDanh());
         panel.add(btnGhiNhanDiemDanh, gbc);
         
-        // Bảng log
+
         gbc.gridy = 3; gbc.gridx = 0; gbc.gridwidth = 2; gbc.fill = GridBagConstraints.BOTH;
         gbc.weightx = 1.0; gbc.weighty = 1.0; 
         
@@ -113,9 +106,7 @@ public class TabHieuSuat extends JPanel {
         return panel;
     }
     
-    /**
-     * Xử lý logic khi nhấn nút "Ghi nhận" điểm danh
-     */
+
     private void xuLyGhiNhanDiemDanh() {
         String maNV = txtMaNVDiemDanh.getText().trim();
         if (maNV.isEmpty()) { /* ... báo lỗi ... */ return; }
@@ -155,12 +146,12 @@ public class TabHieuSuat extends JPanel {
         txtMaNVDiemDanh.setText("");
         radioDiMuon.setSelected(true);
         
-        // === GỌI HÀM REFRESH CỦA PARENT ===
+
         parent.refreshLuongTable();
         parent.refreshBaoCaoTab(); // MỚI
     }
 
-    // Hàm tiện ích tạo placeholder
+
     private JPanel createPlaceholderPanel(String text) {
         JPanel panel = new JPanel(new GridBagLayout());
         JLabel label = new JLabel(text);
