@@ -3,18 +3,13 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.util.List;
 
-/**
- * Lớp này là JPanel cho tab "Quản lý Dự án"
- * PHIÊN BẢN CẬP NHẬT: Gọi refreshBaoCaoTab()
- */
 public class TabDuAn extends JPanel {
     
-    // === Tham chiếu đến Controller chính và Dữ liệu ===
+
     private QuanLyNhanVienGUI parent;
     private List<NhanVien> danhSachNV;
     private List<DuAn> danhSachDuAn;
 
-    // === Các thành phần UI của tab này ===
     private JTextField txtMaDuAn, txtTenDuAn;
     private JComboBox<Integer> cmbDoPhucTap;
     private DefaultTableModel modelDuAn;
@@ -31,7 +26,6 @@ public class TabDuAn extends JPanel {
         
         setLayout(new BorderLayout());
         
-        // === KHU VỰC 1: CRUD DỰ ÁN (Phần trên) ===
         JPanel crudPanel = new JPanel(new BorderLayout(10, 10));
         crudPanel.setBorder(BorderFactory.createTitledBorder("Quản lý Dự án"));
 
@@ -61,7 +55,6 @@ public class TabDuAn extends JPanel {
         tableDuAn = new JTable(modelDuAn);
         crudPanel.add(new JScrollPane(tableDuAn), BorderLayout.CENTER);
         
-        // === KHU VỰC 2: QUẢN LÝ THÀNH VIÊN DỰ ÁN (Phần dưới) ===
         JPanel memberPanel = new JPanel(new BorderLayout(10, 10));
         memberPanel.setBorder(BorderFactory.createTitledBorder("Quản lý Thành viên Dự án"));
         
@@ -93,15 +86,12 @@ public class TabDuAn extends JPanel {
         tableThanhVienDuAn = new JTable(modelThanhVienDuAn);
         memberPanel.add(new JScrollPane(tableThanhVienDuAn), BorderLayout.CENTER);
 
-        // === KẾT HỢP BẰNG JSPLITPANE ===
         JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, crudPanel, memberPanel);
         splitPane.setResizeWeight(0.4);
         add(splitPane, BorderLayout.CENTER);
     }
     
-    // =========================================================================
-    // CÁC PHƯƠNG THỨC LOGIC CỦA TAB NÀY
-    // =========================================================================
+
 
     private void themDuAn() {
         String maDA = txtMaDuAn.getText().trim();
@@ -151,9 +141,8 @@ public class TabDuAn extends JPanel {
                 
         txtMaNVThemVaoDuAn.setText("");
         
-        // === GỌI HÀM REFRESH CỦA PARENT ===
         parent.refreshLuongTable();
-        parent.refreshBaoCaoTab(); // MỚI
+        parent.refreshBaoCaoTab();
     }
 
     private void locThanhVienTheoDuAn() {
@@ -173,9 +162,7 @@ public class TabDuAn extends JPanel {
         }
     }
     
-    // =========================================================================
-    // CÁC PHƯƠNG THỨC REFRESH CỤC BỘ (GỌI BỞI PARENT)
-    // =========================================================================
+
     
     public void refreshTableDuAn() {
         modelDuAn.setRowCount(0);
