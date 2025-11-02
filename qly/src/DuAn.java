@@ -6,7 +6,7 @@ public class DuAn {
 
     private String maDuAn;
     private String tenDuAn;
-    private int doPhucTap; // 1, 2, hoặc 3
+    private int doPhucTap; // 1 2 3
 
     private List<NhanVien> danhSachThanhVien;
 
