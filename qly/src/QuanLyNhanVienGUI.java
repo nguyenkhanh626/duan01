@@ -1,22 +1,15 @@
 import javax.swing.*;
-// import javax.swing.table.DefaultTableModel; // Dòng này đã xóa ở lần trước
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-/**
- * Giao diện chính (Main Frame).
- * PHIÊN BẢN CẬP NHẬT: Thêm TabBaoCao.
- */
 public class QuanLyNhanVienGUI extends JFrame {
 
-    // === DANH SÁCH DỮ LIỆU (MODEL) - SỞ HỮU CHÍNH ===
     List<NhanVien> danhSachNV;
     List<PhongBan> danhSachPB;
     List<DuAn> danhSachDuAn;
 
-    // === CÁC TAB (VIEW) ===
     private TabNhanVien tabNhanVien;
     private TabPhongBan tabPhongBan;
     private TabDuAn tabDuAn;
@@ -71,15 +64,10 @@ public class QuanLyNhanVienGUI extends JFrame {
         tabDuAn.updateDuAnComboBox();
         
         tabLuong.refreshLuongTable();
-        tabBaoCao.refreshBaoCao(); // MỚI
+        tabBaoCao.refreshBaoCao(); 
     }
     
-    // =========================================================================
-    // CÁC PHƯƠNG THỨC REFRESH CHUNG (PUBLIC)
-    // =========================================================================
-    
-    /** Làm mới bảng báo cáo (TabBaoCao) */
-    public void refreshBaoCaoTab() { // MỚI
+    public void refreshBaoCaoTab() {
         if (tabBaoCao != null) {
             tabBaoCao.refreshBaoCao();
         }
@@ -118,9 +106,6 @@ public class QuanLyNhanVienGUI extends JFrame {
         }
     }
     
-    // =========================================================================
-    // TẢI DỮ LIỆU MẪU (Không thay đổi)
-    // =========================================================================
 
     private void loadSampleDataPB() {
         danhSachPB.add(new PhongBan("KT", "Kỹ thuật"));
