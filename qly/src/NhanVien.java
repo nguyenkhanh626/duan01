@@ -21,7 +21,7 @@ public class NhanVien {
         this.cccd = cccd;
         this.thamNien = thamNien;
         this.diemViPham = 0;
-        this.diemThuongDuAn = 0; // TỰ ĐỘNG KHỞI TẠO LÀ 0
+        this.diemThuongDuAn = 0; 
     }
 
     public String getMaNhanVien() { return maNhanVien; }
