@@ -14,7 +14,7 @@ public class DuAn {
         this.maDuAn = maDuAn;
         this.tenDuAn = tenDuAn;
         this.doPhucTap = doPhucTap;
-        this.danhSachThanhVien = new ArrayList<>(); // Khởi tạo list
+        this.danhSachThanhVien = new ArrayList<>(); 
     }
 
     
