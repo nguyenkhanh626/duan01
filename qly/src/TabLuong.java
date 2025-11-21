@@ -1,9 +1,14 @@
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
 import java.text.NumberFormat;
 import java.util.List;
-
 
 public class TabLuong extends JPanel {
 
@@ -23,9 +28,19 @@ public class TabLuong extends JPanel {
         setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
         JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        
         JButton btnRefreshLuong = new JButton("Làm mới Bảng lương");
         btnRefreshLuong.addActionListener(e -> refreshLuongTable());
+        
+        JButton btnXuatExcel = new JButton("Xuất Bảng Lương (Excel)");
+        btnXuatExcel.setBackground(new Color(0, 153, 76));
+        btnXuatExcel.setForeground(Color.WHITE);
+        btnXuatExcel.setFocusPainted(false);
+        btnXuatExcel.addActionListener(e -> xuatFileExcel());
+
         topPanel.add(btnRefreshLuong);
+        topPanel.add(btnXuatExcel);
+        
         add(topPanel, BorderLayout.NORTH);
 
         String[] columnNames = {
@@ -40,7 +55,6 @@ public class TabLuong extends JPanel {
         tableLuong = new JTable(modelLuong);
         add(new JScrollPane(tableLuong), BorderLayout.CENTER);
     }
-
 
     public void refreshLuongTable() {
         if (modelLuong == null) return;
@@ -78,6 +92,68 @@ public class TabLuong extends JPanel {
                 currencyFormatter.format(tienPhat),
                 currencyFormatter.format(luongCuoiCung)
             });
+        }
+    }
+
+    private void xuatFileExcel() {
+        if (tableLuong.getRowCount() == 0) {
+            JOptionPane.showMessageDialog(this, "Không có dữ liệu để xuất!", "Thông báo", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle("Chọn nơi lưu Bảng lương");
+        fileChooser.setFileFilter(new FileNameExtensionFilter("Excel CSV (*.csv)", "csv"));
+        
+        int userSelection = fileChooser.showSaveDialog(this);
+
+        if (userSelection == JFileChooser.APPROVE_OPTION) {
+            File fileToSave = fileChooser.getSelectedFile();
+            
+            if (!fileToSave.getAbsolutePath().endsWith(".csv")) {
+                fileToSave = new File(fileToSave.getAbsolutePath() + ".csv");
+            }
+
+            try (BufferedWriter writer = new BufferedWriter(
+                    new OutputStreamWriter(new FileOutputStream(fileToSave), StandardCharsets.UTF_8))) {
+                
+                writer.write('\uFEFF'); 
+
+                for (int i = 0; i < modelLuong.getColumnCount(); i++) {
+                    writer.write(modelLuong.getColumnName(i));
+                    if (i < modelLuong.getColumnCount() - 1) {
+                        writer.write(",");
+                    }
+                }
+                writer.newLine();
+
+                for (int row = 0; row < modelLuong.getRowCount(); row++) {
+                    for (int col = 0; col < modelLuong.getColumnCount(); col++) {
+                        Object value = modelLuong.getValueAt(row, col);
+                        String data = (value != null) ? value.toString() : "";
+                        
+                        data = data.replace(",", "."); 
+                        
+                        writer.write(data);
+                        if (col < modelLuong.getColumnCount() - 1) {
+                            writer.write(",");
+                        }
+                    }
+                    writer.newLine();
+                }
+
+                JOptionPane.showMessageDialog(this, "Xuất file thành công!\nĐường dẫn: " + fileToSave.getAbsolutePath());
+                
+                try {
+                    Desktop.getDesktop().open(fileToSave);
+                } catch (Exception ex) {
+                    // do nothing
+                }
+
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this, "Lỗi khi lưu file: " + ex.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+                ex.printStackTrace();
+            }
         }
     }
 }

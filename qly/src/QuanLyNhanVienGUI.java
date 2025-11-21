@@ -22,10 +22,13 @@ public class QuanLyNhanVienGUI extends JFrame {
     
     NumberFormat currencyFormatter;
 
-    // account login
     private String adminUsername = "admin";
     private String adminPassword = "admin";
-    private JLabel lblXinChao;
+    private JLabel lblXinChao; 
+    
+    private JLabel lblThoiGianPhien; 
+    private Timer sessionTimer;      
+    private long startSessionTime;   
 
     public QuanLyNhanVienGUI() {
         setTitle("Phần mềm Quản lý Nhân sự");
@@ -80,6 +83,10 @@ public class QuanLyNhanVienGUI extends JFrame {
         JPanel rightPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         rightPanel.setOpaque(false);
 
+        lblThoiGianPhien = new JLabel("Phiên: 00:00:00  |  ");
+        lblThoiGianPhien.setFont(new Font("Arial", Font.BOLD, 12));
+        lblThoiGianPhien.setForeground(new Color(0, 102, 204));
+        
         lblXinChao = new JLabel("Xin chào, " + adminUsername + " | ");
         lblXinChao.setFont(new Font("Arial", Font.ITALIC, 12));
         
@@ -93,6 +100,7 @@ public class QuanLyNhanVienGUI extends JFrame {
         btnDoiMK.addActionListener(e -> hienThiDoiMatKhau());
         btnDangXuat.addActionListener(e -> xuLyDangXuat());
 
+        rightPanel.add(lblThoiGianPhien);
         rightPanel.add(lblXinChao);
         rightPanel.add(btnDoiMK);
         rightPanel.add(btnDangXuat);
@@ -102,8 +110,30 @@ public class QuanLyNhanVienGUI extends JFrame {
         return header;
     }
 
+    private void batDauDemGioLamViec() {
+        startSessionTime = System.currentTimeMillis();
+        
+        if (sessionTimer != null) {
+            sessionTimer.stop();
+        }
+
+        sessionTimer = new Timer(1000, e -> {
+            long now = System.currentTimeMillis();
+            long duration = now - startSessionTime;
+
+            long seconds = (duration / 1000) % 60;
+            long minutes = (duration / (1000 * 60)) % 60;
+            long hours = (duration / (1000 * 60 * 60));
+
+            String timeStr = String.format("Phiên: %02d:%02d:%02d  |  ", hours, minutes, seconds);
+            lblThoiGianPhien.setText(timeStr);
+        });
+        
+        sessionTimer.start();
+    }
+
     public void hienThiManHinhDangNhap() {
-        JDialog loginDialog = new JDialog(this, "Đăng nhập Hệ thống", true); 
+        JDialog loginDialog = new JDialog(this, "Đăng nhập Hệ thống", true);
         loginDialog.setSize(350, 200);
         loginDialog.setLayout(new GridBagLayout());
         loginDialog.setLocationRelativeTo(null);
@@ -143,7 +173,8 @@ public class QuanLyNhanVienGUI extends JFrame {
             String pass = new String(txtPass.getPassword());
 
             if (user.equals(adminUsername) && pass.equals(adminPassword)) {
-                loginDialog.dispose();
+                batDauDemGioLamViec(); 
+                loginDialog.dispose(); 
             } else {
                 JOptionPane.showMessageDialog(loginDialog, "Sai tài khoản hoặc mật khẩu!", "Lỗi", JOptionPane.ERROR_MESSAGE);
             }
@@ -165,9 +196,12 @@ public class QuanLyNhanVienGUI extends JFrame {
             "Bạn có chắc chắn muốn đăng xuất?", "Xác nhận", JOptionPane.YES_NO_OPTION);
         
         if (confirm == JOptionPane.YES_OPTION) {
-            this.setVisible(false);
-            hienThiManHinhDangNhap();
-            this.setVisible(true);
+            if (sessionTimer != null) sessionTimer.stop();
+            lblThoiGianPhien.setText("Phiên: 00:00:00  |  ");
+
+            this.setVisible(false); 
+            hienThiManHinhDangNhap(); 
+            this.setVisible(true); 
         }
     }
 
@@ -269,7 +303,6 @@ public class QuanLyNhanVienGUI extends JFrame {
             QuanLyNhanVienGUI app = new QuanLyNhanVienGUI();
             
             app.hienThiManHinhDangNhap(); 
-            
             app.setVisible(true);
         });
     }
