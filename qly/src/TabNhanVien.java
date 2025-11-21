@@ -1,36 +1,63 @@
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.List;
 
-
 public class TabNhanVien extends JPanel {
-
 
     private QuanLyNhanVienGUI parent;
     private List<NhanVien> danhSachNV;
     private List<PhongBan> danhSachPB;
 
-
     private JComboBox<PhongBan> cmbPhongBanNV;
     private DefaultTableModel modelNV;
     private JTable tableNV;
     private JTextField txtMaNV, txtTenNV, txtSdt, txtEmail, txtNgaySinh, txtCccd, txtThamNien;
-
+    
+    // search
+    private JComboBox<String> cmbTieuChiTimKiem;
+    private JTextField txtTuKhoaTimKiem;
 
     public TabNhanVien(QuanLyNhanVienGUI parent) {
         this.parent = parent;
         this.danhSachNV = parent.danhSachNV; 
         this.danhSachPB = parent.danhSachPB; 
 
-
         setLayout(new BorderLayout(10, 10));
-        
 
         JPanel topPanel = new JPanel(new BorderLayout(0, 10));
+        
+        
+        JPanel searchPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        searchPanel.setBorder(BorderFactory.createTitledBorder("Tìm kiếm & Lọc"));
+        
+        searchPanel.add(new JLabel("Tiêu chí:"));
+        String[] tieuChi = {"Mã Nhân viên", "Tên Nhân viên"};
+        cmbTieuChiTimKiem = new JComboBox<>(tieuChi);
+        searchPanel.add(cmbTieuChiTimKiem);
+        
+        searchPanel.add(new JLabel("    Từ khóa:"));
+        txtTuKhoaTimKiem = new JTextField(20);
+        searchPanel.add(txtTuKhoaTimKiem);
+        
+        // event when type
+        txtTuKhoaTimKiem.getDocument().addDocumentListener(new DocumentListener() {
+            @Override public void insertUpdate(DocumentEvent e) { xuLyTimKiem(); }
+            @Override public void removeUpdate(DocumentEvent e) { xuLyTimKiem(); }
+            @Override public void changedUpdate(DocumentEvent e) { xuLyTimKiem(); }
+        });
+        
+        cmbTieuChiTimKiem.addActionListener(e -> xuLyTimKiem());
+
+        
+        topPanel.add(searchPanel, BorderLayout.NORTH); 
+
         JPanel formPanel = new JPanel(new GridLayout(0, 4, 10, 5));
+        formPanel.setBorder(BorderFactory.createTitledBorder("Thông tin chi tiết")); 
         
         formPanel.add(new JLabel("Mã NV:"));
         txtMaNV = new JTextField();
@@ -72,7 +99,6 @@ public class TabNhanVien extends JPanel {
         JButton btnXoaNV = new JButton("Xóa");
         JButton btnLamMoiNV = new JButton("Làm mới");
 
-
         btnThemNV.addActionListener(e -> themNhanVien());
         btnSuaNV.addActionListener(e -> suaNhanVien());
         btnXoaNV.addActionListener(e -> xoaNhanVien());
@@ -94,7 +120,6 @@ public class TabNhanVien extends JPanel {
             }
         };
         tableNV = new JTable(modelNV);
-        
 
         tableNV.addMouseListener(new MouseAdapter() {
             @Override
@@ -107,8 +132,40 @@ public class TabNhanVien extends JPanel {
         setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
     }
     
+    // === HÀM XỬ LÝ TÌM KIẾM REAL-TIME ===
+    private void xuLyTimKiem() {
+        String tuKhoa = txtTuKhoaTimKiem.getText().trim().toLowerCase();
+        String tieuChi = (String) cmbTieuChiTimKiem.getSelectedItem();
+        
+        modelNV.setRowCount(0); //
+        
+        for (NhanVien nv : danhSachNV) {
+            boolean thoaMan = false;
+            
+            if (tuKhoa.isEmpty()) {
+                thoaMan = true; 
+            } else {
+                if ("Mã Nhân viên".equals(tieuChi)) {
+                    if (nv.getMaNhanVien().toLowerCase().contains(tuKhoa)) {
+                        thoaMan = true;
+                    }
+                } else if ("Tên Nhân viên".equals(tieuChi)) {
+                    if (nv.getHoTen().toLowerCase().contains(tuKhoa)) {
+                        thoaMan = true;
+                    }
+                }
+            }
+            
+            if (thoaMan) {
+                modelNV.addRow(new Object[]{
+                    nv.getMaNhanVien(), nv.getHoTen(), nv.getPhongBan(),
+                    nv.getSdt(), nv.getEmail(), nv.getNgaySinh(),
+                    nv.getCccd(), nv.getThamNien()
+                });
+            }
+        }
+    }
 
-    
     private void hienThiThongTinLenFormNV() {
         int r = tableNV.getSelectedRow();
         if (r == -1) return;
@@ -130,7 +187,6 @@ public class TabNhanVien extends JPanel {
     }
 
     private void themNhanVien() {
-        // ... (code kiểm tra dữ liệu) ...
         String maNV = txtMaNV.getText();
         String tenNV = txtTenNV.getText();
         PhongBan pb = (PhongBan) cmbPhongBanNV.getSelectedItem();
@@ -139,6 +195,7 @@ public class TabNhanVien extends JPanel {
         String ngaySinh = txtNgaySinh.getText();
         String cccd = txtCccd.getText();
         String thamNienStr = txtThamNien.getText();
+        
         if (maNV.isEmpty() || tenNV.isEmpty() || pb == null) {
             JOptionPane.showMessageDialog(this, "Mã NV, Tên NV và Phòng ban là bắt buộc.", "Lỗi", JOptionPane.ERROR_MESSAGE);
             return;
@@ -164,16 +221,11 @@ public class TabNhanVien extends JPanel {
         NhanVien nv = new NhanVien(maNV, tenNV, pb.getTenPhongBan(), sdt, email, ngaySinh, cccd, thamNienInt);
         danhSachNV.add(nv);
         
-        modelNV.addRow(new Object[]{
-                nv.getMaNhanVien(), nv.getHoTen(), nv.getPhongBan(),
-                nv.getSdt(), nv.getEmail(), nv.getNgaySinh(),
-                nv.getCccd(), nv.getThamNien()
-        });
+        xuLyTimKiem(); 
         
         JOptionPane.showMessageDialog(this, "Thêm nhân viên thành công!");
         lamMoiFormNV();
         
-
         parent.locNhanVienTheoPhongBan();
         parent.refreshLuongTable();
         parent.refreshBaoCaoTab();
@@ -181,10 +233,9 @@ public class TabNhanVien extends JPanel {
 
     private void suaNhanVien() {
         int r = tableNV.getSelectedRow();
-        if (r == -1) { /* ... báo lỗi ... */ return; }
+        if (r == -1) { return; }
         
-        // ... (code lấy dữ liệu từ form) ...
-        String maNV = txtMaNV.getText();
+        String maNV = txtMaNV.getText(); 
         String tenMoi = txtTenNV.getText();
         PhongBan pbMoi = (PhongBan) cmbPhongBanNV.getSelectedItem();
         String sdtMoi = txtSdt.getText();
@@ -192,24 +243,12 @@ public class TabNhanVien extends JPanel {
         String ngaySinhMoi = txtNgaySinh.getText();
         String cccdMoi = txtCccd.getText();
         String thamNienMoiStr = txtThamNien.getText();
-        if (tenMoi.isEmpty() || pbMoi == null) { /* ... báo lỗi ... */ return; }
-        int validatedThamNien = 0;
-        if (!thamNienMoiStr.isEmpty()) {
-            try {
-                validatedThamNien = Integer.parseInt(thamNienMoiStr);
-                if (validatedThamNien < 0) { /* ... báo lỗi ... */ return; }
-            } catch (NumberFormatException e) { /* ... báo lỗi ... */ return; }
-        }
-        final int thamNienMoiInt = validatedThamNien;
         
-
-        modelNV.setValueAt(tenMoi, r, 1);
-        modelNV.setValueAt(pbMoi.getTenPhongBan(), r, 2);
-        modelNV.setValueAt(sdtMoi, r, 3);
-        modelNV.setValueAt(emailMoi, r, 4);
-        modelNV.setValueAt(ngaySinhMoi, r, 5);
-        modelNV.setValueAt(cccdMoi, r, 6);
-        modelNV.setValueAt(thamNienMoiInt, r, 7);
+        if (tenMoi.isEmpty() || pbMoi == null) { return; }
+        int validatedThamNien = 0;
+        try {
+             if(!thamNienMoiStr.isEmpty()) validatedThamNien = Integer.parseInt(thamNienMoiStr);
+        } catch(Exception ex) { return; }
 
         for(NhanVien nv : danhSachNV) {
             if(nv.getMaNhanVien().equals(maNV)) {
@@ -219,15 +258,16 @@ public class TabNhanVien extends JPanel {
                 nv.setEmail(emailMoi);
                 nv.setNgaySinh(ngaySinhMoi);
                 nv.setCccd(cccdMoi);
-                nv.setThamNien(thamNienMoiInt);
+                nv.setThamNien(validatedThamNien);
                 break;
             }
         }
 
+        xuLyTimKiem();
+
         JOptionPane.showMessageDialog(this, "Cập nhật nhân viên thành công!");
         lamMoiFormNV();
         
-
         parent.locNhanVienTheoPhongBan();
         parent.refreshLuongTable();
         parent.refreshBaoCaoTab();
@@ -235,18 +275,18 @@ public class TabNhanVien extends JPanel {
 
     private void xoaNhanVien() {
         int r = tableNV.getSelectedRow();
-        if (r == -1) { /* ... báo lỗi ... */ return; }
+        if (r == -1) { return; }
 
         int confirm = JOptionPane.showConfirmDialog(this, "Bạn chắc chắn muốn xóa?", "Xác nhận", JOptionPane.YES_NO_OPTION);
         if (confirm == JOptionPane.YES_OPTION) {
             String maNV = modelNV.getValueAt(r, 0).toString();
             danhSachNV.removeIf(nv -> nv.getMaNhanVien().equals(maNV));
-            modelNV.removeRow(r);
+            
+            xuLyTimKiem();
             
             JOptionPane.showMessageDialog(this, "Xóa nhân viên thành công!");
             lamMoiFormNV();
             
-
             parent.locNhanVienTheoPhongBan();
             parent.refreshLuongTable();
             parent.refreshBaoCaoTab();
@@ -266,17 +306,9 @@ public class TabNhanVien extends JPanel {
         tableNV.clearSelection();
     }
     
-
-    
     public void refreshTableNV() {
-        modelNV.setRowCount(0);
-        for (NhanVien nv : danhSachNV) {
-            modelNV.addRow(new Object[]{
-                nv.getMaNhanVien(), nv.getHoTen(), nv.getPhongBan(),
-                nv.getSdt(), nv.getEmail(), nv.getNgaySinh(),
-                nv.getCccd(), nv.getThamNien()
-            });
-        }
+        txtTuKhoaTimKiem.setText(""); 
+        xuLyTimKiem();
     }
     
     public void updatePhongBanComboBox() {

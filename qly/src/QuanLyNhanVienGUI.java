@@ -1,4 +1,7 @@
 import javax.swing.*;
+import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,9 +22,14 @@ public class QuanLyNhanVienGUI extends JFrame {
     
     NumberFormat currencyFormatter;
 
+    // account login
+    private String adminUsername = "admin";
+    private String adminPassword = "admin";
+    private JLabel lblXinChao;
+
     public QuanLyNhanVienGUI() {
         setTitle("Phần mềm Quản lý Nhân sự");
-        setSize(1200, 700);
+        setSize(1200, 750); 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         
@@ -30,11 +38,13 @@ public class QuanLyNhanVienGUI extends JFrame {
         danhSachNV = new ArrayList<>();
         danhSachPB = new ArrayList<>();
         danhSachDuAn = new ArrayList<>();
-
         loadSampleDataPB();
         loadSampleDataNV();
         loadSampleDataDuAn();
         
+        JPanel headerPanel = createHeaderPanel();
+        add(headerPanel, BorderLayout.NORTH);
+
         JTabbedPane tabbedPane = new JTabbedPane();
         
         tabNhanVien = new TabNhanVien(this);
@@ -49,63 +59,192 @@ public class QuanLyNhanVienGUI extends JFrame {
         tabbedPane.addTab("Quản lý Dự án", null, tabDuAn, "Quản lý các dự án");
         tabbedPane.addTab("Quản lý Lương", null, tabLuong, "Xem bảng lương nhân viên");
         tabbedPane.addTab("Quản lý Hiệu suất", null, tabHieuSuat, "Quản lý và đánh giá hiệu suất");
-        tabbedPane.addTab("Báo cáo", null, tabBaoCao, "Báo cáo và Thống kê"); // MỚI
+        tabbedPane.addTab("Báo cáo", null, tabBaoCao, "Báo cáo và Thống kê");
 
-        add(tabbedPane);
+        add(tabbedPane, BorderLayout.CENTER);
 
-        // first load data
-        tabNhanVien.refreshTableNV();
-        tabNhanVien.updatePhongBanComboBox();
-        
-        tabPhongBan.updatePhongBanComboBox();
-        tabPhongBan.locNhanVienTheoPhongBan();
-        
-        tabDuAn.refreshTableDuAn();
-        tabDuAn.updateDuAnComboBox();
-        
-        tabLuong.refreshLuongTable();
-        tabBaoCao.refreshBaoCao(); 
+        refreshAllTabs();
     }
     
-    public void refreshBaoCaoTab() {
-        if (tabBaoCao != null) {
-            tabBaoCao.refreshBaoCao();
-        }
+
+    private JPanel createHeaderPanel() {
+        JPanel header = new JPanel(new BorderLayout());
+        header.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.GRAY));
+        header.setBackground(new Color(230, 240, 255));
+        
+        JLabel lblTitle = new JLabel("  HỆ THỐNG QUẢN LÝ NHÂN SỰ");
+        lblTitle.setFont(new Font("Arial", Font.BOLD, 16));
+        lblTitle.setForeground(Color.BLUE);
+        header.add(lblTitle, BorderLayout.WEST);
+
+        JPanel rightPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        rightPanel.setOpaque(false);
+
+        lblXinChao = new JLabel("Xin chào, " + adminUsername + " | ");
+        lblXinChao.setFont(new Font("Arial", Font.ITALIC, 12));
+        
+        JButton btnDoiMK = new JButton("Đổi mật khẩu");
+        JButton btnDangXuat = new JButton("Đăng xuất");
+        
+        btnDoiMK.setFocusable(false);
+        btnDangXuat.setFocusable(false);
+        btnDangXuat.setBackground(new Color(255, 200, 200));
+
+        btnDoiMK.addActionListener(e -> hienThiDoiMatKhau());
+        btnDangXuat.addActionListener(e -> xuLyDangXuat());
+
+        rightPanel.add(lblXinChao);
+        rightPanel.add(btnDoiMK);
+        rightPanel.add(btnDangXuat);
+        
+        header.add(rightPanel, BorderLayout.EAST);
+        
+        return header;
     }
-    
-    public void refreshLuongTable() {
-        if (tabLuong != null) {
-            tabLuong.refreshLuongTable();
+
+    public void hienThiManHinhDangNhap() {
+        JDialog loginDialog = new JDialog(this, "Đăng nhập Hệ thống", true); 
+        loginDialog.setSize(350, 200);
+        loginDialog.setLayout(new GridBagLayout());
+        loginDialog.setLocationRelativeTo(null);
+        loginDialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+
+        loginDialog.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                System.exit(0);
+            }
+        });
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(5, 5, 5, 5);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+
+        gbc.gridx = 0; gbc.gridy = 0;
+        loginDialog.add(new JLabel("Tài khoản:"), gbc);
+        gbc.gridx = 1;
+        JTextField txtUser = new JTextField(15);
+        loginDialog.add(txtUser, gbc);
+
+        gbc.gridx = 0; gbc.gridy = 1;
+        loginDialog.add(new JLabel("Mật khẩu:"), gbc);
+        gbc.gridx = 1;
+        JPasswordField txtPass = new JPasswordField(15);
+        loginDialog.add(txtPass, gbc);
+
+        JPanel btnPanel = new JPanel();
+        JButton btnLogin = new JButton("Đăng nhập");
+        JButton btnExit = new JButton("Thoát");
+        
+        loginDialog.getRootPane().setDefaultButton(btnLogin);
+
+        btnLogin.addActionListener(e -> {
+            String user = txtUser.getText();
+            String pass = new String(txtPass.getPassword());
+
+            if (user.equals(adminUsername) && pass.equals(adminPassword)) {
+                loginDialog.dispose();
+            } else {
+                JOptionPane.showMessageDialog(loginDialog, "Sai tài khoản hoặc mật khẩu!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            }
+        });
+
+        btnExit.addActionListener(e -> System.exit(0));
+
+        btnPanel.add(btnLogin);
+        btnPanel.add(btnExit);
+
+        gbc.gridx = 0; gbc.gridy = 2; gbc.gridwidth = 2;
+        loginDialog.add(btnPanel, gbc);
+
+        loginDialog.setVisible(true);
+    }
+
+    private void xuLyDangXuat() {
+        int confirm = JOptionPane.showConfirmDialog(this, 
+            "Bạn có chắc chắn muốn đăng xuất?", "Xác nhận", JOptionPane.YES_NO_OPTION);
+        
+        if (confirm == JOptionPane.YES_OPTION) {
+            this.setVisible(false);
+            hienThiManHinhDangNhap();
+            this.setVisible(true);
         }
     }
 
-    public void locNhanVienTheoPhongBan() {
-        if (tabPhongBan != null) {
-            tabPhongBan.locNhanVienTheoPhongBan();
-        }
+    private void hienThiDoiMatKhau() {
+        JDialog passDialog = new JDialog(this, "Đổi mật khẩu", true);
+        passDialog.setSize(400, 250);
+        passDialog.setLayout(new GridBagLayout());
+        passDialog.setLocationRelativeTo(this);
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(5, 5, 5, 5);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+
+        JPasswordField txtOldPass = new JPasswordField(15);
+        JPasswordField txtNewPass = new JPasswordField(15);
+        JPasswordField txtConfirmPass = new JPasswordField(15);
+
+        gbc.gridx = 0; gbc.gridy = 0; passDialog.add(new JLabel("Mật khẩu cũ:"), gbc);
+        gbc.gridx = 1; passDialog.add(txtOldPass, gbc);
+
+        gbc.gridx = 0; gbc.gridy = 1; passDialog.add(new JLabel("Mật khẩu mới:"), gbc);
+        gbc.gridx = 1; passDialog.add(txtNewPass, gbc);
+
+        gbc.gridx = 0; gbc.gridy = 2; passDialog.add(new JLabel("Xác nhận MK mới:"), gbc);
+        gbc.gridx = 1; passDialog.add(txtConfirmPass, gbc);
+
+        JButton btnSave = new JButton("Lưu thay đổi");
+        btnSave.addActionListener(e -> {
+            String oldP = new String(txtOldPass.getPassword());
+            String newP = new String(txtNewPass.getPassword());
+            String confirmP = new String(txtConfirmPass.getPassword());
+
+            if (!oldP.equals(adminPassword)) {
+                JOptionPane.showMessageDialog(passDialog, "Mật khẩu cũ không đúng!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            if (newP.isEmpty()) {
+                JOptionPane.showMessageDialog(passDialog, "Mật khẩu mới không được để trống!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            if (!newP.equals(confirmP)) {
+                JOptionPane.showMessageDialog(passDialog, "Mật khẩu xác nhận không khớp!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            adminPassword = newP;
+            JOptionPane.showMessageDialog(passDialog, "Đổi mật khẩu thành công!");
+            passDialog.dispose();
+        });
+
+        gbc.gridx = 0; gbc.gridy = 3; gbc.gridwidth = 2; 
+        gbc.anchor = GridBagConstraints.CENTER;
+        passDialog.add(btnSave, gbc);
+
+        passDialog.setVisible(true);
     }
+
     
-    public void refreshTableNV() {
-        if (tabNhanVien != null) {
-            tabNhanVien.refreshTableNV();
-        }
+    public void refreshAllTabs() {
+        refreshTableNV();
+        updatePhongBanComboBox();
+        locNhanVienTheoPhongBan();
+        updateDuAnComboBox();
+        refreshLuongTable();
+        refreshBaoCaoTab();
     }
-    
-    public void updateDuAnComboBox() {
-         if (tabDuAn != null) {
-            tabDuAn.updateDuAnComboBox();
-        }
-    }
-    
+
+    public void refreshBaoCaoTab() { if (tabBaoCao != null) tabBaoCao.refreshBaoCao(); }
+    public void refreshLuongTable() { if (tabLuong != null) tabLuong.refreshLuongTable(); }
+    public void locNhanVienTheoPhongBan() { if (tabPhongBan != null) tabPhongBan.locNhanVienTheoPhongBan(); }
+    public void refreshTableNV() { if (tabNhanVien != null) tabNhanVien.refreshTableNV(); }
+    public void updateDuAnComboBox() { if (tabDuAn != null) tabDuAn.updateDuAnComboBox(); }
     public void updatePhongBanComboBox() {
-        if (tabNhanVien != null) {
-            tabNhanVien.updatePhongBanComboBox();
-        }
-        if (tabPhongBan != null) {
-            tabPhongBan.updatePhongBanComboBox();
-        }
+        if (tabNhanVien != null) tabNhanVien.updatePhongBanComboBox();
+        if (tabPhongBan != null) tabPhongBan.updatePhongBanComboBox();
     }
-    
+
 
     private void loadSampleDataPB() {
         danhSachPB.add(new PhongBan("KT", "Kỹ thuật"));
@@ -126,6 +265,12 @@ public class QuanLyNhanVienGUI extends JFrame {
     }
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new QuanLyNhanVienGUI().setVisible(true));
+        SwingUtilities.invokeLater(() -> {
+            QuanLyNhanVienGUI app = new QuanLyNhanVienGUI();
+            
+            app.hienThiManHinhDangNhap(); 
+            
+            app.setVisible(true);
+        });
     }
 }
